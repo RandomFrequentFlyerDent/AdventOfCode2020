@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AdventOfCode2020.expenses;
+using AdventOfCode2020.password;
+using System;
 
 namespace AdventOfCode2020
 {
@@ -16,10 +18,18 @@ namespace AdventOfCode2020
 
         public void GetAnswer()
         {
-            ILogic logic = null;
+            (int day, ILogic logic) = GetDayAndLogic();
+            var part = GetPart();
+            var result = logic.GetAnswer(InputReader.ReadFile($"day{day}.txt"), part);
+            Console.WriteLine($"Answer: {result}");
+        }
 
-            var implementedDay = false;
+        private (int day, ILogic logic) GetDayAndLogic()
+        {
+            ILogic logic = null;
             int day;
+            var implementedDay = false;
+
             do
             {
                 Console.Write("Day: ");
@@ -39,6 +49,11 @@ namespace AdventOfCode2020
                 implementedDay = true;
             } while (!implementedDay);
 
+            return (day, logic);
+        }
+
+        private int GetPart()
+        {
             var validatedPart = false;
             int part;
             do
@@ -59,8 +74,7 @@ namespace AdventOfCode2020
                 validatedPart = true;
             } while (!validatedPart);
 
-            var result = logic.GetAnswer(InputReader.ReadFile($"day{day}.txt"), part);
-            Console.WriteLine($"Answer: {result}");
+            return part;
         }
     }
 }

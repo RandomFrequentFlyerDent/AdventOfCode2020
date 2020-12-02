@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode2020
+namespace AdventOfCode2020.password
 {
-    public enum ValidationPolicy { SledRentalPlace = 1, TobogganCorporate = 2 }
-
     public class DatabaseChecker : BaseLogic<ValidationPolicy>
     {
         public override object GetAnswer(List<string> input, ValidationPolicy policy)

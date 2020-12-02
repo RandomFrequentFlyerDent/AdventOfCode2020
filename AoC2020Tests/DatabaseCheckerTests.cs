@@ -1,4 +1,4 @@
-﻿using AdventOfCode2020;
+﻿using AdventOfCode2020.password;
 using NUnit.Framework;
 using System.Collections.Generic;
 

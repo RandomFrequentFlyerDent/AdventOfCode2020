@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode2020
+namespace AdventOfCode2020.expenses
 {
-    public enum ExpenseDepth { Two = 1, Three = 2};
-
     public class ExpenseReport : BaseLogic<ExpenseDepth>
     {
         public override object GetAnswer(List<string> input, ExpenseDepth depth)

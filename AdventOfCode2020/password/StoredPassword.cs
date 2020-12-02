@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace AdventOfCode2020
+namespace AdventOfCode2020.password
 {
     public interface IStoredPassword
     {
@@ -23,8 +23,8 @@ namespace AdventOfCode2020
             switch (policy)
             {
                 case ValidationPolicy.TobogganCorporate:
-                    return ((Password[MinFirst - 1] == Validator && Password[MaxSecond - 1] != Validator)
-                        || (Password[MinFirst - 1] != Validator && Password[MaxSecond - 1] == Validator));
+                    return (Password[MinFirst - 1] == Validator && Password[MaxSecond - 1] != Validator)
+                        || (Password[MinFirst - 1] != Validator && Password[MaxSecond - 1] == Validator);
                 case ValidationPolicy.SledRentalPlace:
                     var occurences = Password.Count(c => c == Validator);
                     return occurences >= MinFirst && occurences <= MaxSecond;
