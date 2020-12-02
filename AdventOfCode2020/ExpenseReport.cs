@@ -3,19 +3,21 @@ using System.Linq;
 
 namespace AdventOfCode2020
 {
-    public class ExpenseReport
+    public enum ExpenseDepth { Two = 1, Three = 2};
+
+    public class ExpenseReport : BaseLogic<ExpenseDepth>
     {
-        public int? Get(List<string> input, bool simple = false)
+        public override object GetAnswer(List<string> input, ExpenseDepth depth)
         {
             var expenses = input.Select(i => int.Parse(i)).ToList();
-            var correctExpense = simple
-                ? GetSimpleCorrectExpense(expenses)
-                : GetCorrectExpenses(expenses);
+            var correctExpense = depth == ExpenseDepth.Two
+                ? GetCorrectExpenseAtTwoDepth(expenses)
+                : GetCorrectExpenseAtThreeDepth(expenses);
 
             return correctExpense;
         }
 
-        private int? GetSimpleCorrectExpense(List<int> expenses)
+        private int? GetCorrectExpenseAtTwoDepth(List<int> expenses)
         {
             for (int firstExpense = 0; firstExpense < expenses.Count - 1; firstExpense++)
             {
@@ -28,7 +30,7 @@ namespace AdventOfCode2020
             return null;
         }
 
-        private int? GetCorrectExpenses(List<int> expenses)
+        private int? GetCorrectExpenseAtThreeDepth(List<int> expenses)
         {
             for (int firstExpense = 0; firstExpense < expenses.Count - 2; firstExpense++)
             {

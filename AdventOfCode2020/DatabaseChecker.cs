@@ -3,9 +3,11 @@ using System.Linq;
 
 namespace AdventOfCode2020
 {
-    public class DatabaseChecker
+    public enum ValidationPolicy { SledRentalPlace = 1, TobogganCorporate = 2 }
+
+    public class DatabaseChecker : BaseLogic<ValidationPolicy>
     {
-        public int GetNumberOfValidPasswords(List<string> input, ValidationPolicy policy)
+        public override object GetAnswer(List<string> input, ValidationPolicy policy)
         {
             return input
                 .Select(i => GetStoredPassword(i))

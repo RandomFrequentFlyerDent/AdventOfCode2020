@@ -2,8 +2,6 @@
 
 namespace AdventOfCode2020
 {
-    public enum ValidationPolicy { SledRentalPlace, TobogganCorporate }
-
     public interface IStoredPassword
     {
         string Password { set; }
