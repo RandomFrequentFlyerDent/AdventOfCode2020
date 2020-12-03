@@ -1,5 +1,6 @@
 ﻿using AdventOfCode2020.expenses;
 using AdventOfCode2020.password;
+using AdventOfCode2020.trajectory;
 using System;
 
 namespace AdventOfCode2020
@@ -12,6 +13,7 @@ namespace AdventOfCode2020
             {
                 1 => new ExpenseReport(),
                 2 => new DatabaseChecker(),
+                3 => new RoutePlanner(),
                 _ => null,
             };
         }
