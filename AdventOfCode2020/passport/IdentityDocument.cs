@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020.passport
 {
@@ -68,8 +70,8 @@ namespace AdventOfCode2020.passport
             get
             {
                 var eyecolor = Registration.EyeColor;
-                if (eyecolor == "amb" || eyecolor == "blu" || eyecolor == "brn" || eyecolor == "gry"
-                    || eyecolor == "grn" || eyecolor == "hzl" || eyecolor == "oth")
+                var allowedColors = new List<string> { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
+                if (allowedColors.Contains(eyecolor))
                     return eyecolor;
                 return null;
             }
@@ -96,13 +98,9 @@ namespace AdventOfCode2020.passport
         {
             get
             {
-                return BirthYear != null
-                        && IssueYear != null
-                        && ExpirationYear != null
-                        && Heigth != null
-                        && HairColor != null
-                        && EyeColor != null
-                        && PassportId != null;
+                var properties = new List<string> { BirthYear.ToString(), IssueYear.ToString(), ExpirationYear.ToString(), 
+                    Heigth, HairColor, EyeColor, PassportId };
+                return !properties.Any(p => string.IsNullOrEmpty(p));
             }
         }
     }

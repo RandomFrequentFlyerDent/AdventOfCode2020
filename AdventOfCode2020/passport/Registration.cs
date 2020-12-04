@@ -1,4 +1,7 @@
-﻿namespace AdventOfCode2020.passport
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace AdventOfCode2020.passport
 {
     public class Registration
     {
@@ -14,13 +17,8 @@
         {
             get
             {
-                return BirthYear != null
-                    && IssueYear != null
-                    && ExpirationYear != null
-                    && Heigth != null
-                    && HairColor != null
-                    && EyeColor != null
-                    && PassportId != null;
+                var properties = new List<string> { BirthYear, IssueYear, ExpirationYear, Heigth, HairColor, EyeColor, PassportId };
+                return !properties.Any(p => p == null);
             }
         }
     }
