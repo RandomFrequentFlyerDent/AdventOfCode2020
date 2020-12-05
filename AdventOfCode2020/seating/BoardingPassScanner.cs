@@ -5,6 +5,9 @@ namespace AdventOfCode2020.seating
 {
     public class BoardingPassScanner : BaseLogic<BoardingPassActivity>
     {
+        private readonly int[] _planeRows = Enumerable.Range(0, 128).ToArray();
+        private readonly int[] _planeColumns = Enumerable.Range(0, 8).ToArray();
+
         public override object GetAnswer(List<string> input, BoardingPassActivity modifier)
         {
             var answer = modifier == BoardingPassActivity.SanityCheck
@@ -15,14 +18,12 @@ namespace AdventOfCode2020.seating
 
         private int GetHighestSeatNumber(List<string> input)
         {
-            var rows = Enumerable.Range(0, 128).ToArray();
-            var columns = Enumerable.Range(0, 8).ToArray();
             var seatNumbers = new List<int>();
 
             input.ForEach(i =>
             {
-                var rowNumber = GetRowNumber(i.ToArray(), 0, rows);
-                var columnNumber = GetColumnNumber(i.ToArray(), 7, columns);
+                var rowNumber = GetRowOrColumnNumber(i.ToArray(), 0, _planeRows);
+                var columnNumber = GetRowOrColumnNumber(i.ToArray(), 7, _planeColumns);
                 seatNumbers.Add(rowNumber * 8 + columnNumber);
             });
 
@@ -31,69 +32,36 @@ namespace AdventOfCode2020.seating
 
         private int GetSeatNumber(List<string> input)
         {
-            var rows = Enumerable.Range(0, 128).ToArray();
-            var columns = Enumerable.Range(0, 8).ToArray();
+            var freeRow = input.Select(i => GetRowOrColumnNumber(i.ToArray(), 0, _planeRows))
+                .GroupBy(r => r).ToDictionary(r => r.Key, r => r.Count())
+                .Where(d => d.Value == 7).First().Key;
 
-            var countByRow = input.Select(i => GetRowNumber(i.ToArray(), 0, rows)).GroupBy(r => r).ToDictionary(r => r.Key, r => r.Count());
-            var openRow = countByRow.Where(d => d.Value == 7).First().Key;
-            var countByColumn = input.Select(i => GetColumnNumber(i.ToArray(), 7, columns)).GroupBy(c => c).ToDictionary(c => c.Key, c => c.Count());
-            var openColumn = countByColumn.Aggregate((l, r) => l.Value < r.Value ? l : r).Key; ;
+            var freeColumn = input.Select(i => GetRowOrColumnNumber(i.ToArray(), 7, _planeColumns))
+                .GroupBy(c => c).ToDictionary(c => c.Key, c => c.Count())
+                .Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
 
-            return openRow * 8 + openColumn;
+            return freeRow * 8 + freeColumn;
         }
 
-        private int GetRowNumber(char[] boardingPass, int position, int[] rows)
+        private int GetRowOrColumnNumber(char[] boardingPass, int position, int[] rows)
         {
             if (rows.Length == 1)
                 return rows[0];
 
             var size = rows.Length / 2;
-            List<int> newRows = new List<int>();
+            int[] subset;
 
-            if (boardingPass[position] == 'F')
+            if (boardingPass[position] == 'F' || boardingPass[position] == 'L')
             {
-                for (int i = 0; i < size; i++)
-                {
-                    newRows.Add(rows[i]);
-                }
+                subset = rows.Take(size).ToArray();
             }
             else
             {
-                for (int i = size; i < rows.Length; i++)
-                {
-                    newRows.Add(rows[i]);
-                }
+                subset = rows.Skip(size).Take(size).ToArray();
             }
 
             position++;
-            return GetRowNumber(boardingPass, position, newRows.ToArray());
-        }
-
-        private int GetColumnNumber(char[] boardingPass, int position, int[] columns)
-        {
-            if (columns.Length == 1)
-                return columns[0];
-
-            var size = columns.Length / 2;
-            List<int> newRows = new List<int>();
-
-            if (boardingPass[position] == 'L')
-            {
-                for (int i = 0; i < size; i++)
-                {
-                    newRows.Add(columns[i]);
-                }
-            }
-            else
-            {
-                for (int i = size; i < columns.Length; i++)
-                {
-                    newRows.Add(columns[i]);
-                }
-            }
-
-            position++;
-            return GetColumnNumber(boardingPass, position, newRows.ToArray());
+            return GetRowOrColumnNumber(boardingPass, position, subset);
         }
     }
 }
