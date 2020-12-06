@@ -8,48 +8,42 @@ namespace AdventOfCode2020.customs
         public override object GetAnswer(List<string> input, CustomsType customsType)
         {
             var answer = customsType == CustomsType.AnyoneYes
-                ? GetAnswersByGroupByPerson(input)
-                    .ToDictionary(d => d.Key, d => d.Value.SelectMany(id => id.Value).ToList().Distinct())
-                    .Sum(d => d.Value.Count())
-                : GetPeopleByAnswerByGroup(input)
-                    .Sum(d => d.Value.Count());
-
+                ? GetSumOfDistinctYesAnswers(input)
+                : GetSumOfCommonYesAnswers(input);
             return answer;
         }
 
-        private Dictionary<int, Dictionary<int, IEnumerable<char>>> GetAnswersByGroupByPerson(List<string> input)
+        private int GetSumOfDistinctYesAnswers(List<string> input)
         {
-            Dictionary<int, Dictionary<int, IEnumerable<char>>> answersByGroupByPerson = new Dictionary<int, Dictionary<int, IEnumerable<char>>>();
-            Dictionary<int, IEnumerable<char>> answersByPerson = new Dictionary<int, IEnumerable<char>>();
-            List<char> yesAnswers = new List<char>();
+            var distinctAnswersByGroupByPerson = GetAnswersByGroupByPerson(input)
+                .ToDictionary(d => d.Key, d => d.Value.SelectMany(id => id.Value).ToList().Distinct());
+            return distinctAnswersByGroupByPerson.Sum(d => d.Value.Count());
+        }
+
+        private int GetSumOfCommonYesAnswers(List<string> input)
+        {
+            var peopleByAnswerByGroup = GetPeopleByAnswerByGroup(input);
+            return peopleByAnswerByGroup.Sum(d => d.Value.Count());
+        }
+
+        private Dictionary<int, Dictionary<int, List<char>>> GetAnswersByGroupByPerson(List<string> input)
+        {
+            var seperatedInput = InputReader.ConvertToSeperatedInput(input);
+            Dictionary<int, Dictionary<int, List<char>>> answersByGroupByPerson = new Dictionary<int, Dictionary<int, List<char>>>();
             int group = 0;
             int person = 0;
 
-            for (int i = group; i < input.Count; i++)
+            for (int i = group; i < seperatedInput.Count; i++)
             {
-                var answers = input[i];
-                if (i != 0 && string.IsNullOrEmpty(answers))
+                var answersByGroup = seperatedInput[i];
+                var answersByPerson = new Dictionary<int, List<char>>();
+                for (int j = person; j < answersByGroup.Count; j++)
                 {
-                    answersByGroupByPerson.Add(group, answersByPerson);
-                    yesAnswers = new List<char>();
-                    answersByPerson = new Dictionary<int, IEnumerable<char>>();
-                    group++;
-                    person = 0;
-                    continue;
+                    var answers = answersByGroup[j].ToList();
+                    answersByPerson.Add(j, answers);
                 }
-
-                yesAnswers.AddRange(answers);
-                answersByPerson.Add(person, yesAnswers);
-                yesAnswers = new List<char>();
-                person++;
-
-                if (i + 1 == input.Count)
-                {
-                    answersByGroupByPerson.Add(group, answersByPerson);
-                    continue;
-                }
+                answersByGroupByPerson.Add(i, answersByPerson);
             }
-
             return answersByGroupByPerson;
         }
 
@@ -74,11 +68,10 @@ namespace AdventOfCode2020.customs
                         }
                     });
                 }
-                peopleByAnswerByGroup.Add(answerByGroupByPerson.Key, 
+                peopleByAnswerByGroup.Add(answerByGroupByPerson.Key,
                     personByAnswer.Where(pba => pba.Value.Count() == answerByGroupByPerson.Value.Keys.Count())
                     .ToDictionary(pba => pba.Key, pba => pba.Value));
             }
-
             return peopleByAnswerByGroup;
         }
     }

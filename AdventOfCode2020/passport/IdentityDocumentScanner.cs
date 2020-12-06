@@ -25,30 +25,19 @@ namespace AdventOfCode2020.passport
 
         private static List<string> GetCollatedInput(List<string> input)
         {
+            var seperatedInput = InputReader.ConvertToSeperatedInput(input);
             var collatedInput = new List<string>();
-            var sb = new StringBuilder();
-            
-            for (int i = 0; i < input.Count; i++)
+            seperatedInput.ForEach(si =>
             {
-                var line = input[i];
-                if (string.IsNullOrEmpty(line))
+                var sb = new StringBuilder();
+                si.ForEach(i =>
                 {
-                    var collatedLine = sb.ToString();
-                    if (!string.IsNullOrEmpty(collatedLine))
-                        collatedInput.Add(collatedLine);
-                    sb.Clear();
-                    continue;
-                }
-
-                sb.Append(" " + line);
-
-                if (i + 1 == input.Count)
-                {
-                    collatedInput.Add(sb.ToString());
-                    continue;
-                }
-            }
-
+                    if (sb.Length != 0)
+                        sb.Append(" ");
+                    sb.Append(i);
+                });
+                collatedInput.Add(sb.ToString());
+            });
             return collatedInput;
         }
 
