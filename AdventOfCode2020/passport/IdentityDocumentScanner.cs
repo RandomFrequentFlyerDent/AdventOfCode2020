@@ -7,9 +7,9 @@ namespace AdventOfCode2020.passport
 {
     public class IdentityDocumentScanner : BaseLogic<ScanType>
     {
-        public override object GetAnswer(List<string> input, ScanType modifier)
+        public override object GetAnswer(List<string> input, ScanType scanType)
         {
-            var result = modifier == ScanType.Registered
+            var result = scanType == ScanType.Registered
                 ? GetIdentityDocuments(input).Where(id => id.Registration.IsComplete).Count()
                 : GetIdentityDocuments(input).Where(id => id.IsPassport).Count();
             return result;
