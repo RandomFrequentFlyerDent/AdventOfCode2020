@@ -1,5 +1,6 @@
 ﻿using AdventOfCode2020.customs;
 using AdventOfCode2020.expenses;
+using AdventOfCode2020.luggage;
 using AdventOfCode2020.passport;
 using AdventOfCode2020.password;
 using AdventOfCode2020.seating;
@@ -20,6 +21,7 @@ namespace AdventOfCode2020
                 4 => new IdentityDocumentScanner(),
                 5 => new BoardingPassScanner(),
                 6 => new DeclarationForms(),
+                7 => new LuggageValidator(),
                 _ => null,
             };
         }
