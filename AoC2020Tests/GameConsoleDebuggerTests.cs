@@ -27,6 +27,7 @@ namespace AoC2020Tests
         }
 
         [TestCase(DebugMode.Isolation, 5)]
+        [TestCase(DebugMode.Solution, 8)]
         public void ShouldGetAccumulator(DebugMode debugMode, int expected)
         {
             var actual = _debugger.GetAnswer(_input, debugMode);

@@ -1,35 +1,87 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode2020.entertainment
 {
     public class GameConsoleDebugger : BaseLogic<DebugMode>
     {
-        public static IInstruction[] Instructions { get; private set; }
+        private IInstruction[] _instructions;
         public static long Accumulator { get; set; }
 
         public override object GetAnswer(List<string> input, DebugMode debugMode)
         {
             SetInstructions(input);
             var answer = debugMode == DebugMode.Isolation
-                ? DebugInIsolation()
-                : 2;
+                ? DebugInIsolation(_instructions, out _)
+                : Fix();
             return answer;
         }
 
-        private long DebugInIsolation()
+        private long DebugInIsolation(IInstruction[] instructions, out bool exited)
         {
+            Accumulator = 0;
+            exited = false;
             var unfinished = true;
             var counter = 0;
             do
             {
-                var instruction = Instructions[counter];
+                var instruction = instructions[counter];
                 if (instruction.NumberOfTimesProcessed > 0)
                 {
                     unfinished = false;
                     continue;
                 }
                 counter = instruction.Process();
+                if (counter >= instructions.Length)
+                {
+                    unfinished = false;
+                    exited = true;
+                    continue;
+                }
             } while (unfinished);
+
+            return Accumulator;
+        }
+
+        private long Fix()
+        {
+            List<int> changePositions = _instructions
+                .Where(i => i is NoOperationInstruction || i is JumpInstruction)
+                .Select(i => i.Position).ToList();
+
+            foreach (var position in changePositions)
+            {
+                List<IInstruction> instructions = new List<IInstruction>();
+                _instructions.ToList().ForEach(i =>
+                {
+                    var position = i.Position;
+                    var argument = i.Argument;
+                    if (i is NoOperationInstruction)
+                        instructions.Add(new NoOperationInstruction { Argument = argument, Position = position });
+                    if (i is JumpInstruction)
+                        instructions.Add(new JumpInstruction { Argument = argument, Position = position });
+                    if (i is AccumulatorInstruction)
+                        instructions.Add(new AccumulatorInstruction { Argument = argument, Position = position });
+                });
+                var instruction = instructions[position];
+                if (instruction is NoOperationInstruction)
+                    instructions[position] = new JumpInstruction
+                    {
+                        Argument = instruction.Argument,
+                        Position = instruction.Position
+                    };
+                else
+                {
+                    instructions[position] = new NoOperationInstruction
+                    {
+                        Argument = instruction.Argument,
+                        Position = instruction.Position
+                    };
+                }
+                DebugInIsolation(instructions.ToArray(), out bool exited);
+                if (exited)
+                    break;
+            }
 
             return Accumulator;
         }
@@ -42,7 +94,7 @@ namespace AdventOfCode2020.entertainment
                 instructions.Add(GetInstruction(input[i], i));
             }
 
-            Instructions = instructions.ToArray();
+            _instructions = instructions.ToArray();
         }
 
         public IInstruction GetInstruction(string input, int position)

@@ -2,8 +2,8 @@
 {
     public class AccumulatorInstruction : IInstruction
     {
-        public int Argument { private get; set; }
-        public int Position { private get; set; }
+        public int Argument { get; set; }
+        public int Position { get; set; }
         public int NumberOfTimesProcessed { get; set; }
 
         public int Process()

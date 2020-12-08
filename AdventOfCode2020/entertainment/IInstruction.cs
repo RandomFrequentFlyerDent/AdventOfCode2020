@@ -2,8 +2,8 @@
 {
     public interface IInstruction
     {
-        int Argument { set; }
-        int Position { set; }
+        int Argument { get; set; }
+        int Position { get; set; }
         int NumberOfTimesProcessed { get; set; }
         int Process();
     }
