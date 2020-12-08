@@ -6,10 +6,10 @@
         public int Position { get; set; }
         public int NumberOfTimesProcessed { get; set; }
 
-        public int Process()
+        public (int nextPosition, long accumulator) Process(long accumulator)
         {
             NumberOfTimesProcessed++;
-            return Position + 1;
+            return (Position + 1, accumulator);
         }
 
         public IInstruction GetCleanCopy()

@@ -6,7 +6,6 @@ namespace AdventOfCode2020.entertainment
     public class GameConsoleDebugger : BaseLogic<DebugMode>
     {
         private IInstruction[] _instructions;
-        public static long Accumulator { get; set; }
 
         public override object GetAnswer(List<string> input, DebugMode debugMode)
         {
@@ -19,20 +18,23 @@ namespace AdventOfCode2020.entertainment
 
         private long DebugInIsolation(IInstruction[] instructions, out bool exited)
         {
-            Accumulator = 0;
             exited = false;
             var unfinished = true;
-            var counter = 0;
+            int position = 0;
+            long accumulator = 0;
+            
             do
             {
-                var instruction = instructions[counter];
+                var instruction = instructions[position];
                 if (instruction.NumberOfTimesProcessed > 0)
                 {
                     unfinished = false;
                     continue;
                 }
-                counter = instruction.Process();
-                if (counter >= instructions.Length)
+                var result = instruction.Process(accumulator);
+                position = result.nextPosition;
+                accumulator = result.accumulator;
+                if (position >= instructions.Length)
                 {
                     unfinished = false;
                     exited = true;
@@ -40,7 +42,7 @@ namespace AdventOfCode2020.entertainment
                 }
             } while (unfinished);
 
-            return Accumulator;
+            return accumulator;
         }
 
         private long Fix()
@@ -49,16 +51,17 @@ namespace AdventOfCode2020.entertainment
                 .Where(i => i is NoOperationInstruction || i is JumpInstruction)
                 .Select(i => i.Position).ToList();
 
+            long accumulator = 0;
             foreach (var position in changePositions)
             {
                 IInstruction[] instructions = _instructions.Select(i => i.GetCleanCopy()).ToArray();
                 instructions[position] = instructions[position].GetOppositeInstruction();
-                DebugInIsolation(instructions, out bool exited);
+                accumulator = DebugInIsolation(instructions, out bool exited);
                 if (exited)
                     break;
             }
 
-            return Accumulator;
+            return accumulator;
         }
 
         private void SetInstructions(List<string> input)

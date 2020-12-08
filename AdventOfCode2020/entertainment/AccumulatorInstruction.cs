@@ -6,11 +6,10 @@
         public int Position { get; set; }
         public int NumberOfTimesProcessed { get; set; }
 
-        public int Process()
+        public (int nextPosition, long accumulator) Process(long accumulator)
         {
             NumberOfTimesProcessed++;
-            GameConsoleDebugger.Accumulator += Argument;
-            return Position + 1;
+            return (Position + 1, accumulator += Argument);
         }
 
         public IInstruction GetCleanCopy()
