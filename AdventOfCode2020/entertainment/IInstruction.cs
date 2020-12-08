@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2020.entertainment
+﻿using System;
+
+namespace AdventOfCode2020.entertainment
 {
     public interface IInstruction
     {
@@ -6,5 +8,7 @@
         int Position { get; set; }
         int NumberOfTimesProcessed { get; set; }
         int Process();
+        IInstruction GetCleanCopy();
+        IInstruction GetOppositeInstruction();
     }
 }

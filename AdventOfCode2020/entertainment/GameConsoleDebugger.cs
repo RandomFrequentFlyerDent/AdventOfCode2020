@@ -51,34 +51,9 @@ namespace AdventOfCode2020.entertainment
 
             foreach (var position in changePositions)
             {
-                List<IInstruction> instructions = new List<IInstruction>();
-                _instructions.ToList().ForEach(i =>
-                {
-                    var position = i.Position;
-                    var argument = i.Argument;
-                    if (i is NoOperationInstruction)
-                        instructions.Add(new NoOperationInstruction { Argument = argument, Position = position });
-                    if (i is JumpInstruction)
-                        instructions.Add(new JumpInstruction { Argument = argument, Position = position });
-                    if (i is AccumulatorInstruction)
-                        instructions.Add(new AccumulatorInstruction { Argument = argument, Position = position });
-                });
-                var instruction = instructions[position];
-                if (instruction is NoOperationInstruction)
-                    instructions[position] = new JumpInstruction
-                    {
-                        Argument = instruction.Argument,
-                        Position = instruction.Position
-                    };
-                else
-                {
-                    instructions[position] = new NoOperationInstruction
-                    {
-                        Argument = instruction.Argument,
-                        Position = instruction.Position
-                    };
-                }
-                DebugInIsolation(instructions.ToArray(), out bool exited);
+                IInstruction[] instructions = _instructions.Select(i => i.GetCleanCopy()).ToArray();
+                instructions[position] = instructions[position].GetOppositeInstruction();
+                DebugInIsolation(instructions, out bool exited);
                 if (exited)
                     break;
             }

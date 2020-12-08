@@ -12,5 +12,15 @@
             GameConsoleDebugger.Accumulator += Argument;
             return Position + 1;
         }
+
+        public IInstruction GetCleanCopy()
+        {
+            return new AccumulatorInstruction { Argument = Argument, Position = Position, NumberOfTimesProcessed = 0 };
+        }
+
+        public IInstruction GetOppositeInstruction()
+        {
+            return null;
+        }
     }
 }

@@ -11,5 +11,15 @@
             NumberOfTimesProcessed++;
             return Position + 1;
         }
+
+        public IInstruction GetCleanCopy()
+        {
+            return new NoOperationInstruction { Argument = Argument, Position = Position, NumberOfTimesProcessed = 0 };
+        }
+
+        public IInstruction GetOppositeInstruction()
+        {
+            return new JumpInstruction { Argument = Argument, Position = Position, NumberOfTimesProcessed = 0 };
+        }
     }
 }
