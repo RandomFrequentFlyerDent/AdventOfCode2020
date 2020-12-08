@@ -3,6 +3,6 @@
     public enum DebugMode
     {
         Isolation = 1,
-        Advanced = 2
+        Solution = 2
     }
 }

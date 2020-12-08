@@ -1,35 +1,61 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace AdventOfCode2020.entertainment
 {
     public class GameConsoleDebugger : BaseLogic<DebugMode>
     {
+        public static IInstruction[] Instructions { get; private set; }
+        public static long Accumulator { get; set; }
+
         public override object GetAnswer(List<string> input, DebugMode debugMode)
         {
+            SetInstructions(input);
             var answer = debugMode == DebugMode.Isolation
-                ? GetInstructions(input).Count
+                ? DebugInIsolation()
                 : 2;
             return answer;
         }
 
-        private List<IInstruction> GetInstructions(List<string> input)
+        private long DebugInIsolation()
         {
-            return input.Select(i => GetInstruction(i)).ToList();
+            var unfinished = true;
+            var counter = 0;
+            do
+            {
+                var instruction = Instructions[counter];
+                if (instruction.NumberOfTimesProcessed > 0)
+                {
+                    unfinished = false;
+                    continue;
+                }
+                counter = instruction.Process();
+            } while (unfinished);
+
+            return Accumulator;
         }
 
-        public IInstruction GetInstruction(string input)
+        private void SetInstructions(List<string> input)
+        {
+            var instructions = new List<IInstruction>();
+            for (int i = 0; i < input.Count; i++)
+            {
+                instructions.Add(GetInstruction(input[i], i));
+            }
+
+            Instructions = instructions.ToArray();
+        }
+
+        public IInstruction GetInstruction(string input, int position)
         {
             var operation = input.Substring(0, 3);
             var argument = int.Parse(input.Substring(3));
-            switch (operation)
+            return operation switch
             {
-                case "acc": return new AccumulatorInstruction { Argument = argument };
-                case "nop": return new NoOperationInstruction { Argument = argument };
-                case "jmp": return new JumpInstruction { Argument = argument };
-                default:
-                    return null;
-            }
+                "acc" => new AccumulatorInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
+                "nop" => new NoOperationInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
+                "jmp" => new JumpInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
+                _ => null,
+            };
         }
     }
 }

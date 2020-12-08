@@ -2,11 +2,14 @@
 {
     public class JumpInstruction : IInstruction
     {
-        public long Argument { get; set; }
+        public int Argument { private get; set; }
+        public int Position { private get; set; }
+        public int NumberOfTimesProcessed { get; set; }
 
-        public int GetAccumulator(int currentAccumulator, IInstruction[] instructions)
+        public int Process()
         {
-            throw new System.NotImplementedException();
+            NumberOfTimesProcessed++;
+            return Position + Argument;
         }
     }
 }

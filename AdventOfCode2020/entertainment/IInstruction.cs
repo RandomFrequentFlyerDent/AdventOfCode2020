@@ -2,7 +2,9 @@
 {
     public interface IInstruction
     {
-        long Argument { get; set; }
-        int GetAccumulator(int currentAccumulator, IInstruction[] instructions);
+        int Argument { set; }
+        int Position { set; }
+        int NumberOfTimesProcessed { get; set; }
+        int Process();
     }
 }

@@ -1,14 +1,16 @@
-﻿using System;
-
-namespace AdventOfCode2020.entertainment
+﻿namespace AdventOfCode2020.entertainment
 {
     public class AccumulatorInstruction : IInstruction
     {
-        public long Argument { get; set; }
+        public int Argument { private get; set; }
+        public int Position { private get; set; }
+        public int NumberOfTimesProcessed { get; set; }
 
-        public int GetAccumulator(int currentAccumulator, IInstruction[] instructions)
+        public int Process()
         {
-            throw new NotImplementedException();
+            NumberOfTimesProcessed++;
+            GameConsoleDebugger.Accumulator += Argument;
+            return Position + 1;
         }
     }
 }
