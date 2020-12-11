@@ -1,4 +1,5 @@
-﻿using AdventOfCode2020.customs;
+﻿using AdventOfCode2020.charger;
+using AdventOfCode2020.customs;
 using AdventOfCode2020.dataport;
 using AdventOfCode2020.entertainment;
 using AdventOfCode2020.expenses;
@@ -26,6 +27,7 @@ namespace AdventOfCode2020
                 7 => new LuggageValidator(),
                 8 => new GameConsoleDebugger(),
                 9 => new Attacker(),
+                10 => new DeviceCharger(),
                 _ => null,
             };
         }
