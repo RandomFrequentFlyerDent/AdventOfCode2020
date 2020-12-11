@@ -1,4 +1,4 @@
-﻿using AdventOfCode2020.seating;
+﻿using AdventOfCode2020.seating.plane;
 using NUnit.Framework;
 using System.Linq;
 

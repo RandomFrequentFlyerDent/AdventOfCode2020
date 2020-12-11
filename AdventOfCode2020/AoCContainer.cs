@@ -6,7 +6,7 @@ using AdventOfCode2020.expenses;
 using AdventOfCode2020.luggage;
 using AdventOfCode2020.passport;
 using AdventOfCode2020.password;
-using AdventOfCode2020.seating;
+using AdventOfCode2020.seating.plane;
 using AdventOfCode2020.trajectory;
 using System;
 

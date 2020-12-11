@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2020.seating
+﻿namespace AdventOfCode2020.seating.plane
 {
     public enum BoardingPassActivity
     {

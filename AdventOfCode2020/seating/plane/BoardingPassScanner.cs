@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode2020.seating
+namespace AdventOfCode2020.seating.plane
 {
     public class BoardingPassScanner : BaseLogic<BoardingPassActivity>
     {
