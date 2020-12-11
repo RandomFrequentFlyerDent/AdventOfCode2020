@@ -6,6 +6,7 @@ using AdventOfCode2020.expenses;
 using AdventOfCode2020.luggage;
 using AdventOfCode2020.passport;
 using AdventOfCode2020.password;
+using AdventOfCode2020.seating.ferry;
 using AdventOfCode2020.seating.plane;
 using AdventOfCode2020.trajectory;
 using System;
@@ -28,6 +29,7 @@ namespace AdventOfCode2020
                 8 => new GameConsoleDebugger(),
                 9 => new Attacker(),
                 10 => new DeviceCharger(),
+                11 => new LayoutManager(),
                 _ => null,
             };
         }
