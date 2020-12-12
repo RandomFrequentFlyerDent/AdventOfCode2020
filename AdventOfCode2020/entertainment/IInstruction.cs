@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AdventOfCode2020.entertainment
+﻿namespace AdventOfCode2020.entertainment
 {
     public interface IInstruction
     {

@@ -1,4 +1,5 @@
-﻿using AdventOfCode2020.navigation;
+﻿using AdventOfCode2020.entertainment;
+using AdventOfCode2020.navigation;
 using System.Collections.Generic;
 using System.IO;
 
@@ -49,7 +50,7 @@ namespace AdventOfCode2020
         }       
     }
 
-    public static class InputEnumExtensions
+    public static class InputExtensions
     {
         public static WindDirection ReadCompass(this char input)
         {
@@ -59,7 +60,7 @@ namespace AdventOfCode2020
                 'E' => WindDirection.East,
                 'S' => WindDirection.South,
                 'W' => WindDirection.West,
-                _ => WindDirection.NA,
+                _ => WindDirection.NA
             };
         }
 
@@ -69,7 +70,18 @@ namespace AdventOfCode2020
             {
                 'L' => RotateDirection.Left,
                 'R' => RotateDirection.Right,
-                _ => RotateDirection.Unknown,
+                _ => RotateDirection.Unknown
+            };
+        }
+
+        public static IInstruction ReadInstruction(this string input)
+        {
+            return input switch
+            {
+                "nop" => new NoOperationInstruction(),
+                "jmp" => new JumpInstruction(),
+                "acc" => new AccumulatorInstruction(),
+                _ => null
             };
         }
     }

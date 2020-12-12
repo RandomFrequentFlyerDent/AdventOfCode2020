@@ -22,7 +22,7 @@ namespace AdventOfCode2020.entertainment
             var unfinished = true;
             int position = 0;
             long accumulator = 0;
-            
+
             do
             {
                 var instruction = instructions[position];
@@ -77,15 +77,12 @@ namespace AdventOfCode2020.entertainment
 
         public IInstruction GetInstruction(string input, int position)
         {
-            var operation = input.Substring(0, 3);
             var argument = int.Parse(input.Substring(3));
-            return operation switch
-            {
-                "acc" => new AccumulatorInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
-                "nop" => new NoOperationInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
-                "jmp" => new JumpInstruction { Argument = argument, Position = position, NumberOfTimesProcessed = 0 },
-                _ => null,
-            };
+            var instruction = input.Substring(0, 3).ReadInstruction();
+            instruction.Argument = argument;
+            instruction.Position = position;
+            instruction.NumberOfTimesProcessed = 0;
+            return instruction;
         }
     }
 }
