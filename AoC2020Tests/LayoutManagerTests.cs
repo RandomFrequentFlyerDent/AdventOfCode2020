@@ -28,6 +28,7 @@ namespace AoC2020Tests
         }
 
         [TestCase(RuleSet.Simple, 37)]
+        [TestCase(RuleSet.Advanced, 26)]
         public void ShouldGetUnoccupiedSeats(RuleSet ruleSet, int expected)
         {
             var actual = _layoutManager.GetAnswer(_input, ruleSet);

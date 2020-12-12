@@ -12,25 +12,20 @@ namespace AdventOfCode2020.seating.ferry
         public override object GetAnswer(List<string> input, RuleSet ruleSet)
         {
             SetSpaces(input);
-
-            var answer = ruleSet == RuleSet.Simple
-                ? GetUnoccupiedSeats().Count
-                : 2;
-            return answer;
+            return GetUnoccupiedSeats(ruleSet).Count;
         }
 
-        private List<ISpace> GetUnoccupiedSeats()
+        private List<ISpace> GetUnoccupiedSeats(RuleSet ruleSet)
         {
             var changes = true;
             do
             {
-                changes = PerformRound();
+                changes = PerformRound(ruleSet);
             } while (changes);
-            // Draw();
             return _rows.SelectMany(r => r.Spaces).Where(s => s is Seat && ((Seat)s).IsOccupied).ToList();
         }
 
-        public bool PerformRound()
+        public bool PerformRound(RuleSet ruleSet)
         {
             var changes = false;
             _rows.ForEach(r =>
@@ -38,12 +33,12 @@ namespace AdventOfCode2020.seating.ferry
                 var row = new SeatingRow();
                 r.Spaces.ForEach(s =>
                 {
-                    if (s is Seat && s.IsOccupied && BecomesUnoccupied((Seat)s))
+                    if (s is Seat && s.IsOccupied && BecomesUnoccupied(ruleSet, (Seat)s))
                     {
                         row.Spaces.Add(new Seat { Row = s.Row, Space = s.Space, IsOccupied = false });
                         changes = true;
                     }
-                    else if (s is Seat && !s.IsOccupied && BecomesOccupied((Seat)s))
+                    else if (s is Seat && !s.IsOccupied && BecomesOccupied(ruleSet, (Seat)s))
                     {
                         row.Spaces.Add(new Seat { Row = s.Row, Space = s.Space, IsOccupied = true });
                         changes = true;
@@ -61,49 +56,84 @@ namespace AdventOfCode2020.seating.ferry
             return changes;
         }
 
-        public bool BecomesOccupied(Seat seat)
+        public bool BecomesOccupied(RuleSet ruleSet, Seat seat)
         {
             if (seat.IsOccupied)
                 return false;
-            return GetAdjacentSpaces(seat).Where(s => s is Seat).All(s => !s.IsOccupied);
+            return GetAdjacentSpaces(ruleSet, seat).Where(s => s is Seat).All(s => !s.IsOccupied);
         }
 
-        public bool BecomesUnoccupied(Seat seat)
+        public bool BecomesUnoccupied(RuleSet ruleSet, Seat seat)
         {
             if (!seat.IsOccupied)
                 return false;
-            return GetAdjacentSpaces(seat).Where(s => s is Seat && s.IsOccupied).ToList().Count > 3;
+            var occupiedSeats = ruleSet == RuleSet.Simple ? 4 : 5;
+            return GetAdjacentSpaces(ruleSet, seat).Where(s => s is Seat && s.IsOccupied).ToList().Count >= occupiedSeats;
         }
 
-        public List<ISpace> GetAdjacentSpaces(Seat seat)
+        public List<ISpace> GetAdjacentSpaces(RuleSet ruleSet, Seat seat)
         {
             var spaces = new List<ISpace>();
-            if (seat.Row - 1 >= 0)
+            var directions = (ViewingDirection[])Enum.GetValues(typeof(ViewingDirection));
+            directions.ToList().ForEach(d =>
             {
-                spaces.AddRange(new List<ISpace>
-                {
-                    _rows[seat.Row - 1].Spaces.ElementAtOrDefault(seat.Space - 1),
-                    _rows[seat.Row - 1].Spaces.ElementAtOrDefault(seat.Space),
-                    _rows[seat.Row - 1].Spaces.ElementAtOrDefault(seat.Space + 1)
-                });
-            };
-
-            spaces.AddRange(new List<ISpace>
-            {
-                _rows[seat.Row].Spaces.ElementAtOrDefault(seat.Space - 1),
-                _rows[seat.Row].Spaces.ElementAtOrDefault(seat.Space + 1)
+                spaces.Add(View(ruleSet, seat, 1, d));
             });
 
-            if (seat.Row + 1 < _rows.Count)
-            {
-                spaces.AddRange(new List<ISpace>
-                {
-                    _rows[seat.Row + 1].Spaces.ElementAtOrDefault(seat.Space - 1),
-                    _rows[seat.Row + 1].Spaces.ElementAtOrDefault(seat.Space),
-                    _rows[seat.Row + 1].Spaces.ElementAtOrDefault(seat.Space + 1)
-                });
-            }
             return spaces;
+        }
+
+        public ISpace View(RuleSet ruleSet, Seat seat, int position, ViewingDirection direction)
+        {
+            if (position < 0 || position >= _rows.Count)
+                return null;
+            var space = GetSpace(seat, position, direction);
+            if (ruleSet == RuleSet.Simple)
+                return space;
+            if (space is Seat)
+                return space;
+            
+            position++;
+            return View(ruleSet, seat, position, direction);
+        }
+
+        public ISpace GetSpace(Seat seat, int position, ViewingDirection direction)
+        {
+            var aboveRow = seat.Row - position;
+            var belowRow = seat.Row + position;
+            ISpace space = null;
+
+            switch (direction)
+            {
+                case ViewingDirection.Up: 
+                    space = aboveRow < 0 ? null : _rows[seat.Row - position].Spaces.ElementAtOrDefault(seat.Space);
+                    break;
+                case ViewingDirection.UpLeft:
+                    space = aboveRow < 0 ? null : _rows[seat.Row - position].Spaces.ElementAtOrDefault(seat.Space - position);
+                    break;
+                case ViewingDirection.UpRight:
+                    space = aboveRow < 0 ? null : _rows[seat.Row - position].Spaces.ElementAtOrDefault(seat.Space + position);
+                    break;
+                case ViewingDirection.Left:
+                    space = _rows[seat.Row].Spaces.ElementAtOrDefault(seat.Space - position);
+                    break;
+                case ViewingDirection.Right:
+                    space = _rows[seat.Row].Spaces.ElementAtOrDefault(seat.Space + position);
+                    break;
+                case ViewingDirection.Bottom:
+                    space = belowRow >= _rows.Count ? null : _rows[seat.Row + position].Spaces.ElementAtOrDefault(seat.Space);
+                    break;
+                case ViewingDirection.BottomLeft:
+                    space = belowRow >= _rows.Count ? null : _rows[seat.Row + position].Spaces.ElementAtOrDefault(seat.Space - position);
+                    break;
+                case ViewingDirection.BottomRight:
+                    space = belowRow >= _rows.Count ? null : _rows[seat.Row + position].Spaces.ElementAtOrDefault(seat.Space + position);
+                    break;
+                default:
+                    break;
+            }
+
+            return space;
         }
 
         private void SetSpaces(List<string> input)
@@ -126,19 +156,6 @@ namespace AdventOfCode2020.seating.ferry
                 }
                 _rows.Add(row);
             }
-        }
-
-        private void Draw()
-        {
-            _rows.ForEach(r =>
-            {
-                r.Spaces.ForEach(s =>
-                {
-                    var space = s is Floor ? '.' : ((Seat)s).IsOccupied ? '#' : 'L';
-                    Console.Write($"{space}");
-                });
-                Console.WriteLine();
-            });
         }
     }
 }
