@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AdventOfCode2020.navigation;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AdventOfCode2020
@@ -45,6 +46,31 @@ namespace AdventOfCode2020
                 }
             }
             return seperatedInput;
+        }       
+    }
+
+    public static class InputEnumExtensions
+    {
+        public static WindDirection ReadCompass(this char input)
+        {
+            return input switch
+            {
+                'N' => WindDirection.North,
+                'E' => WindDirection.East,
+                'S' => WindDirection.South,
+                'W' => WindDirection.West,
+                _ => WindDirection.NA,
+            };
+        }
+
+        public static RotateDirection ReadFerryDirection(this char input)
+        {
+            return input switch
+            {
+                'L' => RotateDirection.Left,
+                'R' => RotateDirection.Right,
+                _ => RotateDirection.Unknown,
+            };
         }
     }
 }

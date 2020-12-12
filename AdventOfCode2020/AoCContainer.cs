@@ -4,6 +4,7 @@ using AdventOfCode2020.dataport;
 using AdventOfCode2020.entertainment;
 using AdventOfCode2020.expenses;
 using AdventOfCode2020.luggage;
+using AdventOfCode2020.navigation;
 using AdventOfCode2020.passport;
 using AdventOfCode2020.password;
 using AdventOfCode2020.seating.ferry;
@@ -30,6 +31,7 @@ namespace AdventOfCode2020
                 9 => new Attacker(),
                 10 => new DeviceCharger(),
                 11 => new LayoutManager(),
+                12 => new FerrySteering(),
                 _ => null,
             };
         }
