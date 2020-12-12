@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace AdventOfCode2020.trajectory
 {
-    public class RoutePlanner : BaseLogic<RouteType>
+    public class RoutePlanner : ILogic
     {
-        public override object GetAnswer(List<string> input, RouteType routeType)
+        public object GetAnswer(List<string> input, int part)
         {
-            var numberOfTrees = routeType == RouteType.Simple
+            var numberOfTrees = part == 1
                 ? GetNumberOfTreesEncountered(GetFullMountain(input, 1, 3), 1, 3)
                 : GetTreesFromMultiplePasses(input, new (int, int)[] { (1, 1), (1, 3), (1, 5), (1, 7), (2, 1) });
 

@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace AdventOfCode2020.customs
 {
-    public class DeclarationForms : BaseLogic<CustomsType>
+    public class DeclarationForms : ILogic
     {
-        public override object GetAnswer(List<string> input, CustomsType customsType)
+        public object GetAnswer(List<string> input, int part)
         {
-            var answer = customsType == CustomsType.AnyoneYes
+            var answer = part == 1
                 ? GetSumOfDistinctYesAnswers(input)
                 : GetSumOfCommonYesAnswers(input);
             return answer;

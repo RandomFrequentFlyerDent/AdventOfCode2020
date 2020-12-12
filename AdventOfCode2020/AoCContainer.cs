@@ -1,100 +1,70 @@
-﻿using AdventOfCode2020.charger;
-using AdventOfCode2020.customs;
-using AdventOfCode2020.dataport;
-using AdventOfCode2020.entertainment;
-using AdventOfCode2020.expenses;
-using AdventOfCode2020.luggage;
-using AdventOfCode2020.navigation;
-using AdventOfCode2020.passport;
-using AdventOfCode2020.password;
-using AdventOfCode2020.seating.ferry;
-using AdventOfCode2020.seating.plane;
-using AdventOfCode2020.trajectory;
-using System;
+﻿using System;
 
 namespace AdventOfCode2020
 {
     public class AoCContainer
     {
-        private ILogic GetLogic(int day)
-        {
-            return day switch
-            {
-                1 => new ExpenseReport(),
-                2 => new DatabaseChecker(),
-                3 => new RoutePlanner(),
-                4 => new IdentityDocumentScanner(),
-                5 => new BoardingPassScanner(),
-                6 => new DeclarationForms(),
-                7 => new LuggageValidator(),
-                8 => new GameConsoleDebugger(),
-                9 => new Attacker(),
-                10 => new DeviceCharger(),
-                11 => new LayoutManager(),
-                12 => new FerrySteering(),
-                _ => null,
-            };
-        }
+        private readonly Logic _logic = new Logic();
 
         public void GetAnswer()
         {
-            (int day, ILogic logic) = GetDayAndLogic();
+            (ILogic logic, int day) = GetDayAndLogic();
             var part = GetPart();
             var result = logic.GetAnswer(InputReader.ReadFile($"day{day}.txt"), part);
             Console.WriteLine($"Answer: {result}");
+            AskAgain();
         }
 
-        private (int day, ILogic logic) GetDayAndLogic()
+        private (ILogic, int) GetDayAndLogic()
         {
-            ILogic logic = null;
-            int day;
-            var implementedDay = false;
-
             do
             {
                 Console.Write("Day: ");
-                if (!int.TryParse(Console.ReadLine(), out day))
+                if (int.TryParse(Console.ReadLine(), out int day))
                 {
-                    Console.WriteLine("That's not an integer number, now is it?");
-                    continue;
+                    try
+                    {
+                        var logic = _logic[day];
+                        return (logic, day);
+                    }
+                    catch (NotImplementedException)
+                    {
+                        Console.WriteLine($"Day {day} has not been implemented yet");
+                    }
                 }
-
-                logic = GetLogic(day);
-                if (logic == null)
-                {
-                    Console.WriteLine($"Day {day} has not been implemented yet");
-                    continue;
-                }
-
-                implementedDay = true;
-            } while (!implementedDay);
-
-            return (day, logic);
+            } while (true);
         }
 
         private int GetPart()
         {
-            var validatedPart = false;
-            int part;
             do
             {
                 Console.Write("Part: ");
-                if (!int.TryParse(Console.ReadLine(), out part))
+                if (int.TryParse(Console.ReadLine(), out int part))
                 {
-                    Console.WriteLine("That's not an integer number, now is it?");
-                    continue;
+                    if (part == 1 || part == 2)
+                        return part;
                 }
+            } while (true);
+        }
 
-                if (part != 1 && part != 2)
+        private void AskAgain()
+        {
+            var again = false;
+            var unanswered = true;
+            do
+            {
+                Console.Write("Quit [y/n]: ");
+                var read = Console.ReadLine();
+                if (read == "y" || read == "n")
                 {
-                    Console.WriteLine($"Part {part} is not a valid day part, choose 1 or 2");
-                    continue;
+                    again = read == "n";
+                    unanswered = false;
                 }
+            } while (unanswered);
 
-                validatedPart = true;
-            } while (!validatedPart);
-
-            return part;
+            if (again)
+                GetAnswer();
         }
     }
 }

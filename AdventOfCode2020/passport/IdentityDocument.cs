@@ -81,7 +81,7 @@ namespace AdventOfCode2020.passport
         {
             get
             {
-                if (int.TryParse(Registration.PassportId, out int id) && Registration.PassportId.Length == 9)
+                if (int.TryParse(Registration.PassportId, out _) && Registration.PassportId.Length == 9)
                     return Registration.PassportId;
                 return null;
             }

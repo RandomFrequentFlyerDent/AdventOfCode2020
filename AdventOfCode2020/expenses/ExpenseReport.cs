@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace AdventOfCode2020.expenses
 {
-    public class ExpenseReport : BaseLogic<ExpenseDepth>
+    public class ExpenseReport : ILogic
     {
-        public override object GetAnswer(List<string> input, ExpenseDepth depth)
+        public object GetAnswer(List<string> input, int part)
         {
             var expenses = input.Select(i => int.Parse(i)).ToList();
-            var correctExpense = depth == ExpenseDepth.Two
+            var correctExpense = part == 1
                 ? GetCorrectExpenseAtTwoDepth(expenses)
                 : GetCorrectExpenseAtThreeDepth(expenses);
 

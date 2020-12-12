@@ -4,13 +4,16 @@ using System.Linq;
 
 namespace AdventOfCode2020.seating.ferry
 {
-    public class LayoutManager : BaseLogic<RuleSet>
+    public enum RuleSet { Adjacent = 1, WholePlane = 2 }
+
+    public class LayoutManager : ILogic
     {
         private List<SeatingRow> _rows;
         private List<SeatingRow> _dynamicRows;
 
-        public override object GetAnswer(List<string> input, RuleSet ruleSet)
+        public object GetAnswer(List<string> input, int part)
         {
+            var ruleSet = (RuleSet)part;
             SetSpaces(input);
             return GetUnoccupiedSeats(ruleSet).Count;
         }
@@ -67,7 +70,7 @@ namespace AdventOfCode2020.seating.ferry
         {
             if (!seat.IsOccupied)
                 return false;
-            var occupiedSeats = ruleSet == RuleSet.Simple ? 4 : 5;
+            var occupiedSeats = ruleSet == RuleSet.Adjacent ? 4 : 5;
             return GetAdjacentSpaces(ruleSet, seat).Where(s => s is Seat && s.IsOccupied).ToList().Count >= occupiedSeats;
         }
 
@@ -88,11 +91,11 @@ namespace AdventOfCode2020.seating.ferry
             if (position < 0 || position >= _rows.Count)
                 return null;
             var space = GetSpace(seat, position, direction);
-            if (ruleSet == RuleSet.Simple)
+            if (ruleSet == RuleSet.Adjacent)
                 return space;
             if (space is Seat)
                 return space;
-            
+
             position++;
             return View(ruleSet, seat, position, direction);
         }
@@ -105,7 +108,7 @@ namespace AdventOfCode2020.seating.ferry
 
             switch (direction)
             {
-                case ViewingDirection.Up: 
+                case ViewingDirection.Up:
                     space = aboveRow < 0 ? null : _rows[seat.Row - position].Spaces.ElementAtOrDefault(seat.Space);
                     break;
                 case ViewingDirection.UpLeft:

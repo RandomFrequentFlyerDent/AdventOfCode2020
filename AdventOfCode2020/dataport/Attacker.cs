@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace AdventOfCode2020.dataport
 {
-    public class Attacker : BaseLogic<XMAS>
+    public enum XMAS { Preamble = 1, EncryptionWeakness = 2, TestPreamble = 3, TestEncryptionWeakness = 4 }
+
+    public class Attacker : ILogic
     {
-        public override object GetAnswer(List<string> input, XMAS xmas)
+        public object GetAnswer(List<string> input, int part)
         {
+            var xmas = (XMAS)part;
             var data = input.Select(i => long.Parse(i)).ToList();
             var result = xmas == XMAS.Preamble
                 ? GetNotContainedInPreamble(data, 25)

@@ -4,18 +4,18 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020.luggage
 {
-    public class LuggageValidator : BaseLogic<LuggageProperty>
+    public class LuggageValidator : ILogic
     {
-        private List<Bag> _bags = new List<Bag>();
+        private readonly List<Bag> _bags = new List<Bag>();
         private Bag _myBag;
 
-        public override object GetAnswer(List<string> input, LuggageProperty containment)
+        public object GetAnswer(List<string> input, int part)
         {
             SetBags(input);
             SetContents(input);
             _myBag = _bags.Where(b => b.Color == "shiny gold").First();
 
-            var result = containment == LuggageProperty.Ability
+            var result = part == 1
                 ? CanContainMyBag()
                 : GetPrice();
 

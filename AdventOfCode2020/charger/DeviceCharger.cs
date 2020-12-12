@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace AdventOfCode2020.charger
 {
-    public class DeviceCharger : BaseLogic<AdapterCheck>
+    public class DeviceCharger : ILogic
     {
         private List<int> _adapterJolts;
 
-        public override object GetAnswer(List<string> input, AdapterCheck jolt)
+        public object GetAnswer(List<string> input, int part)
         {
             SetOrderedAdapterJoltsWithDeviceJolt(input);
-            var result = jolt == AdapterCheck.JoltsDifference
+            var result = part == 1
                 ? GetJoltDifference()
                 : GetArrangements();
             return result;

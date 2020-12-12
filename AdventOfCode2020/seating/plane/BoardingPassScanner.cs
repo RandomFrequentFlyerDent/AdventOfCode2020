@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace AdventOfCode2020.seating.plane
 {
-    public class BoardingPassScanner : BaseLogic<BoardingPassActivity>
+    public class BoardingPassScanner : ILogic
     {
         private readonly int[] _planeRows = Enumerable.Range(0, 128).ToArray();
         private readonly int[] _planeColumns = Enumerable.Range(0, 8).ToArray();
 
-        public override object GetAnswer(List<string> input, BoardingPassActivity modifier)
+        public object GetAnswer(List<string> input, int part)
         {
-            var answer = modifier == BoardingPassActivity.SanityCheck
+            var answer = part == 1
                 ? GetHighestSeatNumber(input)
                 : GetSeatNumber(input);
             return answer;

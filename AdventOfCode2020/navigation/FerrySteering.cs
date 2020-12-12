@@ -3,18 +3,21 @@ using System.Collections.Generic;
 
 namespace AdventOfCode2020.navigation
 {
-    public class FerrySteering : BaseLogic<Navigation>
+    public enum Navigation { Ferry = 1, WayPoint = 2 }
+
+    public class FerrySteering : ILogic
     {
-        public override object GetAnswer(List<string> input, Navigation navigation)
+        public object GetAnswer(List<string> input, int part)
         {
+            var navigation = (Navigation)part;
             return GetDistance(input, navigation);
         }
 
         private int GetDistance(List<string> input, Navigation navigation)
         {
             var instructions = GetInstructions(input);
-            var ferry = new Ferry 
-            { 
+            var ferry = new Ferry
+            {
                 Position = new Position { NorthSouth = 0, EastWest = 0, Facing = WindDirection.East },
                 WayPoint = new Position { NorthSouth = 1, EastWest = 10, Facing = WindDirection.NA }
             };

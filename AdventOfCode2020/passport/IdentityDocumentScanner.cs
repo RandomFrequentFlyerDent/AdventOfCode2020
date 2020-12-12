@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020.passport
 {
-    public class IdentityDocumentScanner : BaseLogic<ScanType>
+    public class IdentityDocumentScanner : ILogic
     {
-        public override object GetAnswer(List<string> input, ScanType scanType)
+        public object GetAnswer(List<string> input, int part)
         {
-            var result = scanType == ScanType.Registered
+            var result = part == 1
                 ? GetIdentityDocuments(input).Where(id => id.Registration.IsComplete).Count()
                 : GetIdentityDocuments(input).Where(id => id.IsPassport).Count();
             return result;

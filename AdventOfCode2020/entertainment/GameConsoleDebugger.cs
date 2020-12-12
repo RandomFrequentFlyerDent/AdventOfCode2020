@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace AdventOfCode2020.entertainment
 {
-    public class GameConsoleDebugger : BaseLogic<DebugMode>
+    public class GameConsoleDebugger : ILogic
     {
         private IInstruction[] _instructions;
 
-        public override object GetAnswer(List<string> input, DebugMode debugMode)
+        public object GetAnswer(List<string> input, int part)
         {
             SetInstructions(input);
-            var answer = debugMode == DebugMode.Isolation
+            var answer = part == 1
                 ? DebugInIsolation(_instructions, out _)
                 : Fix();
             return answer;
