@@ -16,12 +16,12 @@ namespace AoC2020Tests
         }
 
 
-        [TestCase(13, 3, 25, ExpectedResult = 1202161486, TestName = "BusSchedule_2f")]
-        [TestCase(13, 3, 24, ExpectedResult = 1261476, TestName = "BusSchedule_2e")]
-        [TestCase(13, 3, 23, ExpectedResult = 779210, TestName = "BusSchedule_2d")]
-        [TestCase(13, 3, 22, ExpectedResult = 754018, TestName = "BusSchedule_2c")]
-        [TestCase(13, 3, 21, ExpectedResult = 3417, TestName = "BusSchedule_2b")]
-        [TestCase(13, 3, 20, ExpectedResult = 1068781, TestName = "BusSchedule_2a")]
+        [TestCase(13, 2, 25, ExpectedResult = 1202161486, TestName = "BusSchedule_2f")]
+        [TestCase(13, 2, 24, ExpectedResult = 1261476, TestName = "BusSchedule_2e")]
+        [TestCase(13, 2, 23, ExpectedResult = 779210, TestName = "BusSchedule_2d")]
+        [TestCase(13, 2, 22, ExpectedResult = 754018, TestName = "BusSchedule_2c")]
+        [TestCase(13, 2, 21, ExpectedResult = 3417, TestName = "BusSchedule_2b")]
+        [TestCase(13, 2, 20, ExpectedResult = 1068781, TestName = "BusSchedule_2a")]
         [TestCase(13, 1, 20, ExpectedResult = 295, TestName = "BusSchedule_1")]
         [TestCase(12, 2, 19, ExpectedResult = 286, TestName = "FerrySteering_2")]
         [TestCase(12, 1, 19, ExpectedResult = 25, TestName = "FerrySteering_1")]
