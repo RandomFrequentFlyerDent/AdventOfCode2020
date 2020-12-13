@@ -1,4 +1,5 @@
-﻿using AdventOfCode2020.charger;
+﻿using AdventOfCode2020.bus;
+using AdventOfCode2020.charger;
 using AdventOfCode2020.customs;
 using AdventOfCode2020.dataport;
 using AdventOfCode2020.entertainment;
@@ -17,25 +18,26 @@ namespace AdventOfCode2020
 {
     public interface ILogic
     {
-        object GetAnswer(List<string> input, int modifier);
+        object GetAnswer(List<string> input, int part);
     }
 
     public class Logic
     {
         private readonly Dictionary<int, ILogic> _logic = new Dictionary<int, ILogic>
         {
-            { 1, new ExpenseReport() },
-            { 2, new DatabaseChecker() },
-            { 3, new RoutePlanner() },
-            { 4, new IdentityDocumentScanner() },
-            { 5, new BoardingPassScanner() },
-            { 6, new DeclarationForms() },
-            { 7, new LuggageValidator() },
-            { 8, new GameConsoleDebugger() },
-            { 9, new Attacker() },
-            { 10, new DeviceCharger() },
+            { 13, new BusScheduler() },
+            { 12, new FerrySteering() },
             { 11, new LayoutManager() },
-            { 12, new FerrySteering() }
+            { 10, new DeviceCharger() },
+            { 9, new Attacker() },
+            { 8, new GameConsoleDebugger() },
+            { 7, new LuggageValidator() },
+            { 6, new DeclarationForms() },
+            { 5, new BoardingPassScanner() },
+            { 4, new IdentityDocumentScanner() },
+            { 3, new RoutePlanner() },
+            { 2, new DatabaseChecker() },
+            { 1, new ExpenseReport() },
         };
 
         public ILogic this[int key]
