@@ -25,6 +25,7 @@ namespace AdventOfCode2020
     {
         private readonly Dictionary<int, ILogic> _logic = new Dictionary<int, ILogic>
         {
+            { 14, new Initializer() },
             { 13, new BusScheduler() },
             { 12, new FerrySteering() },
             { 11, new LayoutManager() },
