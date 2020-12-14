@@ -7,8 +7,7 @@ namespace AdventOfCode2020.dataport
 {
     public class Initializer : ILogic
     {
-        private long[] _memory = new long[262144];
-        private Dictionary<long, long> _memories = new Dictionary<long, long>();
+        private Dictionary<long, long> _memory = new Dictionary<long, long>();
 
         public object GetAnswer(List<string> input, int part)
         {
@@ -17,13 +16,12 @@ namespace AdventOfCode2020.dataport
             if (part == 1)
             {
                 ReadToMemory(initializerProgram);
-                return _memory.Sum();
             }
             else
             {
                 ReadToMemoryDecoded(initializerProgram);
-                return _memories.Values.Sum();
             }
+            return _memory.Values.Sum();
         }
 
         private void ReadToMemory(List<BitMaskProgram> programs)
@@ -33,7 +31,15 @@ namespace AdventOfCode2020.dataport
                 var mask = p.Mask;
                 p.Bit.ForEach(b =>
                 {
-                    _memory[b.Key] = ApplyMaskToValue(b.Value, mask);
+                    var value = ApplyMaskToValue(b.Value, mask);
+                    if (_memory.ContainsKey(b.Key))
+                    {
+                        _memory[b.Key] = value;
+                    }
+                    else
+                    {
+                        _memory.Add(b.Key, value);
+                    }
                 });
             });
         }
@@ -62,13 +68,13 @@ namespace AdventOfCode2020.dataport
                     indexes.ForEach(i =>
                     {
                         var key = Convert.ToInt64(i, 2);
-                        if (_memories.ContainsKey(key))
+                        if (_memory.ContainsKey(key))
                         {
-                            _memories[key] = b.Value;
+                            _memory[key] = b.Value;
                         }
                         else
                         {
-                            _memories.Add(key, b.Value);
+                            _memory.Add(key, b.Value);
                         }
                     });
                 });
