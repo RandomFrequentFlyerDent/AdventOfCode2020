@@ -16,6 +16,7 @@ namespace AoC2020Tests
         }
 
 
+        [TestCase(14, 2, 27, ExpectedResult = 208, TestName = "Initializer_2")]
         [TestCase(14, 1, 26, ExpectedResult = 165, TestName = "Initializer_1")]
         [TestCase(13, 2, 25, ExpectedResult = 1202161486, TestName = "BusSchedule_2f")]
         [TestCase(13, 2, 24, ExpectedResult = 1261476, TestName = "BusSchedule_2e")]

@@ -8,39 +8,109 @@ namespace AdventOfCode2020.dataport
     public class Initializer : ILogic
     {
         private long[] _memory = new long[262144];
+        private Dictionary<long, long> _memories = new Dictionary<long, long>();
 
         public object GetAnswer(List<string> input, int part)
         {
             var initializerProgram = GetInitializerProgram(input);
-            ReadToMemory(initializerProgram);
 
-            var answer = part == 1
-                ? _memory.Sum()
-                : 2;
-            return answer;
+            if (part == 1)
+            {
+                ReadToMemory(initializerProgram);
+                return _memory.Sum();
+            }
+            else
+            {
+                ReadToMemoryDecoded(initializerProgram);
+                return _memories.Values.Sum();
+            }
         }
 
-        public void ReadToMemory(List<BitMaskProgram> programs)
+        private void ReadToMemory(List<BitMaskProgram> programs)
         {
             programs.ForEach(p =>
             {
                 var mask = p.Mask;
                 p.Bit.ForEach(b =>
                 {
-                    var expand = Convert.ToString(b.Value, 2).PadLeft(36, '0').ToCharArray();
-                    for (int i = 0; i < mask.Count(); i++)
-                    {
-                        char bit = mask[i];
-                        if (bit != 'X')
-                            expand[i] = bit;
-                    }
-                    var value = Convert.ToInt64(new string(expand), 2);
-                    _memory[b.Key] = value;
+                    _memory[b.Key] = ApplyMaskToValue(b.Value, mask);
                 });
             });
         }
 
-        public List<BitMaskProgram> GetInitializerProgram(List<string> input)
+        private long ApplyMaskToValue(int value, string mask)
+        {
+            var expand = Convert.ToString(value, 2).PadLeft(36, '0').ToCharArray();
+            for (int i = 0; i < mask.Count(); i++)
+            {
+                char bit = mask[i];
+                if (bit != 'X')
+                    expand[i] = bit;
+            }
+            return Convert.ToInt64(new string(expand), 2);
+        }
+
+        private void ReadToMemoryDecoded(List<BitMaskProgram> programs)
+        {
+            programs.ForEach(p =>
+            {
+                var mask = p.Mask;
+                p.Bit.ForEach(b =>
+                {
+                    var index = ApplyMaskToIndex(b.Key, mask);
+                    var indexes = ExpandIndex(new List<string> { index });
+                    indexes.ForEach(i =>
+                    {
+                        var key = Convert.ToInt64(i, 2);
+                        if (_memories.ContainsKey(key))
+                        {
+                            _memories[key] = b.Value;
+                        }
+                        else
+                        {
+                            _memories.Add(key, b.Value);
+                        }
+                    });
+                });
+            });
+        }
+
+        private string ApplyMaskToIndex(int value, string mask)
+        {
+            var expand = Convert.ToString(value, 2).PadLeft(36, '0').ToCharArray();
+            for (int i = 0; i < mask.Count(); i++)
+            {
+                char bit = mask[i];
+                if (bit == 'X')
+                    expand[i] = bit;
+                if (bit == '1')
+                    expand[i] = '1';
+            }
+            return new string(expand);
+        }
+
+        private List<string> ExpandIndex(List<string> indexes)
+        {
+            if (!indexes.Any(i => i.Contains('X')))
+            {
+                return indexes;
+            }
+
+            var newIndexes = new List<string>();
+            indexes.ForEach(i =>
+            {
+                var last = i.LastIndexOf('X');
+                var zero = i.ToCharArray();
+                zero[last] = '0';
+                newIndexes.Add(new string(zero));
+                var one = i.ToCharArray();
+                one[last] = '1';
+                newIndexes.Add(new string(one));
+            });
+            return ExpandIndex(newIndexes);
+        }
+
+        private List<BitMaskProgram> GetInitializerProgram(List<string> input)
         {
             var initializerProgram = new List<BitMaskProgram>();
             var program = new BitMaskProgram();
