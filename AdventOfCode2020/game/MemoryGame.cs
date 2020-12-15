@@ -16,22 +16,49 @@ namespace AdventOfCode2020.game
 
         private long PlayMemoryGame(List<long> startingNumbers, int lastSpoken)
         {
-            for (int i = startingNumbers.Count - 1; i < lastSpoken - 1; i++)
+            Dictionary<long, List<long>> indexesByNumber = new Dictionary<long, List<long>>();
+            for (int i = 0; i < startingNumbers.Count; i++)
             {
-                var lastNumber = startingNumbers[i];
-                var occurences = startingNumbers.Select(s => s == lastNumber);
-                if (startingNumbers.Where(s => s == lastNumber).Count() == 1)
+                indexesByNumber.Add(startingNumbers[i], new List<long> { i + 1 });
+            }
+
+            var counter = startingNumbers.Count + 1;
+            var lastNumber = startingNumbers.Last();
+            do
+            {
+                var indexed = indexesByNumber[lastNumber];
+                if (indexed.Count == 1)
                 {
-                    startingNumbers.Add(0);
+                    if (indexesByNumber.ContainsKey(0))
+                    {
+                        indexesByNumber[0].Add(counter);
+                        if (indexesByNumber[0].Count == 3)
+                            indexesByNumber[0].RemoveAt(0);
+                    }
+                    else
+                    {
+                        indexesByNumber.Add(0, new List<long> { counter });
+                    }
+                    lastNumber = 0;
                 }
                 else
                 {
-                    var last = startingNumbers.LastIndexOf(lastNumber);
-                    var secondLast = startingNumbers.SkipLast(startingNumbers.Count - last).ToList().LastIndexOf(lastNumber);
-                    startingNumbers.Add((last + 1) - (secondLast + 1));
+                    var newNumber = indexed[1] - indexed[0];
+                    if (indexesByNumber.ContainsKey(newNumber))
+                    {
+                        indexesByNumber[newNumber].Add(counter);
+                        if (indexesByNumber[newNumber].Count == 3)
+                            indexesByNumber[newNumber].RemoveAt(0);
+                    }
+                    else
+                    {
+                        indexesByNumber.Add(newNumber, new List<long> { counter });
+                    }
+                    lastNumber = newNumber;
                 }
-            }
-            return startingNumbers.Last();
+                counter++;
+            } while (counter <= lastSpoken);
+            return lastNumber;
         }
     }
 }
