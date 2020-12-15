@@ -16,49 +16,52 @@ namespace AdventOfCode2020.game
 
         private long PlayMemoryGame(List<long> startingNumbers, int lastSpoken)
         {
+            Dictionary<long, List<long>> turnsByNumber = GetTurnsByNumber(startingNumbers);
+
+            var counter = startingNumbers.Count + 1;
+            var lastNumber = startingNumbers.Last();
+            do
+            {
+                var turns = turnsByNumber[lastNumber];
+                if (turns.Count == 1)
+                {
+                    AddToTurnsByNumber(turnsByNumber, counter, 0);
+                    lastNumber = 0;
+                }
+                else
+                {
+                    var number = turns[1] - turns[0];
+                    AddToTurnsByNumber(turnsByNumber, counter, number);
+                    lastNumber = number;
+                }
+                counter++;
+            } while (counter <= lastSpoken);
+            return lastNumber;
+        }
+
+        private void AddToTurnsByNumber(Dictionary<long, List<long>> turnsByNumber, int counter, long number)
+        {
+            if (turnsByNumber.ContainsKey(number))
+            {
+                turnsByNumber[number].Add(counter);
+                if (turnsByNumber[number].Count == 3)
+                    turnsByNumber[number].RemoveAt(0);
+            }
+            else
+            {
+                turnsByNumber.Add(number, new List<long> { counter });
+            }
+        }
+
+        private Dictionary<long, List<long>> GetTurnsByNumber(List<long> startingNumbers)
+        {
             Dictionary<long, List<long>> indexesByNumber = new Dictionary<long, List<long>>();
             for (int i = 0; i < startingNumbers.Count; i++)
             {
                 indexesByNumber.Add(startingNumbers[i], new List<long> { i + 1 });
             }
 
-            var counter = startingNumbers.Count + 1;
-            var lastNumber = startingNumbers.Last();
-            do
-            {
-                var indexed = indexesByNumber[lastNumber];
-                if (indexed.Count == 1)
-                {
-                    if (indexesByNumber.ContainsKey(0))
-                    {
-                        indexesByNumber[0].Add(counter);
-                        if (indexesByNumber[0].Count == 3)
-                            indexesByNumber[0].RemoveAt(0);
-                    }
-                    else
-                    {
-                        indexesByNumber.Add(0, new List<long> { counter });
-                    }
-                    lastNumber = 0;
-                }
-                else
-                {
-                    var newNumber = indexed[1] - indexed[0];
-                    if (indexesByNumber.ContainsKey(newNumber))
-                    {
-                        indexesByNumber[newNumber].Add(counter);
-                        if (indexesByNumber[newNumber].Count == 3)
-                            indexesByNumber[newNumber].RemoveAt(0);
-                    }
-                    else
-                    {
-                        indexesByNumber.Add(newNumber, new List<long> { counter });
-                    }
-                    lastNumber = newNumber;
-                }
-                counter++;
-            } while (counter <= lastSpoken);
-            return lastNumber;
+            return indexesByNumber;
         }
     }
 }
