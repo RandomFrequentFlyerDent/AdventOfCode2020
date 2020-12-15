@@ -17,6 +17,13 @@ namespace AoC2020Tests
 
         private readonly Dictionary<int, List<string>> _input = new Dictionary<int, List<string>>
         {
+            { 34, new List<string> {"3", "1", "2" } },
+            { 33, new List<string> {"3", "2", "1" } },
+            { 32, new List<string> {"2", "3", "1" } },
+            { 31, new List<string> {"1", "2", "3" } },
+            { 30, new List<string> {"2", "1", "3" } },
+            { 29, new List<string> {"1", "3", "2" } },
+            { 28, new List<string> {"0", "3", "6" } },
             { 27, new List<string> {"mask = 000000000000000000000000000000X1001X", "mem[42] = 100", "mask = 00000000000000000000000000000000X0XX", "mem[26] = 1"} },
             { 26, new List<string> {"mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X", "mem[8] = 11", "mem[7] = 101", "mem[8] = 0"} },
             { 25, new List<string> {"939", "1789,37,47,1889" } },

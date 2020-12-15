@@ -4,6 +4,7 @@ using AdventOfCode2020.customs;
 using AdventOfCode2020.dataport;
 using AdventOfCode2020.entertainment;
 using AdventOfCode2020.expenses;
+using AdventOfCode2020.game;
 using AdventOfCode2020.luggage;
 using AdventOfCode2020.navigation;
 using AdventOfCode2020.passport;
@@ -25,6 +26,7 @@ namespace AdventOfCode2020
     {
         private readonly Dictionary<int, ILogic> _logic = new Dictionary<int, ILogic>
         {
+            { 15, new MemoryGame() },
             { 14, new Initializer() },
             { 13, new BusScheduler() },
             { 12, new FerrySteering() },

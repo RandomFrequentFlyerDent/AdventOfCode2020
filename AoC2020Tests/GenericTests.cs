@@ -16,6 +16,20 @@ namespace AoC2020Tests
         }
 
 
+        [TestCase(15, 2, 34, ExpectedResult = 362, TestName = "MemoryCard_2g")]
+        [TestCase(15, 2, 33, ExpectedResult = 18, TestName = "MemoryCard_2f")]
+        [TestCase(15, 2, 32, ExpectedResult = 6895259, TestName = "MemoryCard_2e")]
+        [TestCase(15, 2, 31, ExpectedResult = 261214, TestName = "MemoryCard_2d")]
+        [TestCase(15, 2, 30, ExpectedResult = 3544142, TestName = "MemoryCard_2c")]
+        [TestCase(15, 2, 29, ExpectedResult = 2578, TestName = "MemoryCard_2b")]
+        [TestCase(15, 2, 28, ExpectedResult = 175594, TestName = "MemoryCard_2a")]
+        [TestCase(15, 1, 34, ExpectedResult = 1836, TestName = "MemoryCard_1g")]
+        [TestCase(15, 1, 33, ExpectedResult = 438, TestName = "MemoryCard_1f")]
+        [TestCase(15, 1, 32, ExpectedResult = 78, TestName = "MemoryCard_1e")]
+        [TestCase(15, 1, 31, ExpectedResult = 27, TestName = "MemoryCard_1d")]
+        [TestCase(15, 1, 30, ExpectedResult = 10, TestName = "MemoryCard_1c")]
+        [TestCase(15, 1, 29, ExpectedResult = 1, TestName = "MemoryCard_1b")]
+        [TestCase(15, 1, 28, ExpectedResult = 436, TestName = "MemoryCard_1a")]
         [TestCase(14, 2, 27, ExpectedResult = 208, TestName = "Initializer_2")]
         [TestCase(14, 1, 26, ExpectedResult = 165, TestName = "Initializer_1")]
         [TestCase(13, 2, 25, ExpectedResult = 1202161486, TestName = "BusSchedule_2f")]
