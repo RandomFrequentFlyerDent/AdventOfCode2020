@@ -11,6 +11,7 @@ using AdventOfCode2020.passport;
 using AdventOfCode2020.password;
 using AdventOfCode2020.seating.ferry;
 using AdventOfCode2020.seating.plane;
+using AdventOfCode2020.train;
 using AdventOfCode2020.trajectory;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace AdventOfCode2020
     {
         private readonly Dictionary<int, ILogic> _logic = new Dictionary<int, ILogic>
         {
+            { 16, new Ticketvalidator() },
             { 15, new MemoryGame() },
             { 14, new Initializer() },
             { 13, new BusScheduler() },

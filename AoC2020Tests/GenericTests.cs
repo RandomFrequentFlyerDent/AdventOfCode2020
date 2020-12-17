@@ -15,7 +15,7 @@ namespace AoC2020Tests
             _input = new TestInput();
         }
 
-
+        [TestCase(16, 1, 35, ExpectedResult = 71, TestName = "TrainTicketValidator_1")]
         [TestCase(15, 2, 34, ExpectedResult = 362, TestName = "MemoryCard_2g")]
         [TestCase(15, 2, 33, ExpectedResult = 18, TestName = "MemoryCard_2f")]
         [TestCase(15, 2, 32, ExpectedResult = 6895259, TestName = "MemoryCard_2e")]
