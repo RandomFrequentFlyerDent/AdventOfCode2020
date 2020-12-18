@@ -14,16 +14,61 @@ namespace AdventOfCode2020.train
         {
             ExtractRulesAndTickets(input);
             var answer = part == 1
-                ? 1
-                : 2;
+                ? GetInvalidByAnyField().Sum()
+                : part == 2
+                ? GetValidatedTicket("departure")
+                : GetValidatedTicket("class");
             return answer;
         }
 
-        //private List<int> GetInvalidByAnyField()
-        //{
-        //    var ranges = _validationRules.Rules.Values.SelectMany(d => d).ToList();
-        //    _nearbyTickets.SelectMany(nt => nt).Where(t => ranges.)
-        //}
+        private List<int> GetInvalidByAnyField()
+        {
+            return _nearbyTickets.SelectMany(t => t).Where(t => !_validationRules.IsValidForAnyField(t)).ToList();
+        }
+
+        private int GetValidatedTicket(string field)
+        {
+            // wrong answers
+            // 337527599
+            // 305068317272992
+            var validTickets = _nearbyTickets.Where(t => _validationRules.IsValid(t)).ToList();
+            var determinedFields = new List<string>();
+            var determining = true;
+            var ticket = 1;
+
+            do
+            {
+                for (int i = 0; i < validTickets[0].Count; i++)
+                {
+                    var ticketsByField = validTickets.Select(t => t[i]).ToList();
+                    var validFields = _validationRules.GetValidFields(ticketsByField);
+                    if (validFields.All(f => determinedFields.Contains(f)))
+                    {
+                        continue;
+                    }
+                    else if (validFields.Count == 1)
+                    {
+                        determinedFields.Add(validFields[0]);
+                        if (validFields[0].StartsWith(field))
+                            ticket *= _myTicket[i];
+                    }
+                    else
+                    {
+                        var leftOverFields = validFields.Where(f => !determinedFields.Contains(f)).ToList();
+                        if (leftOverFields.Count == 1)
+                        {
+                            determinedFields.Add(leftOverFields[0]);
+                            if (leftOverFields[0].StartsWith(field))
+                                ticket *= _myTicket[i];
+                        }
+                    }
+                }
+                if (determinedFields.Count == validTickets[0].Count)
+                    determining = false;
+            } while (determining);
+
+            return ticket;
+        }
 
         private void ExtractRulesAndTickets(List<string> input)
         {
@@ -52,14 +97,14 @@ namespace AdventOfCode2020.train
                 if (input[i].Equals("your ticket:"))
                 {
                     _myTicket = input[i + 1].Split(',').Select(i => int.Parse(i)).ToList();
-                    counter = i + 1;
+                    counter = i + 2;
                     break;
                 }
             }
 
             for (int i = counter; i < input.Count; i++)
             {
-                if (!input[i].Equals("nearby tickets:"))
+                if (!input[i].Equals("nearby tickets:") && !input[i].Equals(""))
                 {
                     var ticket = input[i].Split(',').Select(i => int.Parse(i)).ToList();
                     _nearbyTickets.Add(ticket);
