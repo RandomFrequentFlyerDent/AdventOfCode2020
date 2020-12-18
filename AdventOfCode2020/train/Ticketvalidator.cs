@@ -4,10 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode2020.train
 {
-    public class Ticketvalidator : ILogic
+    public class TicketValidator : ILogic
     {
-        private List<int> _myTicket = new List<int>();
-        private List<List<int>> _nearbyTickets = new List<List<int>>();
+        private Ticket _myTicket;
+        private List<Ticket> _nearbyTickets = new List<Ticket>();
         private ValidationRules _validationRules = new ValidationRules();
 
         public object GetAnswer(List<string> input, int part)
@@ -23,7 +23,7 @@ namespace AdventOfCode2020.train
 
         private List<int> GetInvalidByAnyField()
         {
-            return _nearbyTickets.SelectMany(t => t).Where(t => !_validationRules.IsValidForAnyField(t)).ToList();
+            return _nearbyTickets.SelectMany(t => t.Values).Where(v => !_validationRules.Rules.Any(r => r.IsValid(v))).ToList();
         }
 
         private int GetValidatedTicket(string field)
@@ -32,84 +32,80 @@ namespace AdventOfCode2020.train
             // 337527599
             // 305068317272992
             var validTickets = _nearbyTickets.Where(t => _validationRules.IsValid(t)).ToList();
-            var determinedFields = new List<string>();
-            var determining = true;
-            var ticket = 1;
+            validTickets.Add(_myTicket);
+            var unfoundRules = _validationRules.Rules.Where(r => r.Order == -1).ToList();
+            var searching = true;
 
-            do
+            while (searching)
             {
-                for (int i = 0; i < validTickets[0].Count; i++)
+                for (int i = 0; i < _myTicket.Values.Count; i++)
                 {
-                    var ticketsByField = validTickets.Select(t => t[i]).ToList();
-                    var validFields = _validationRules.GetValidFields(ticketsByField);
-                    if (validFields.All(f => determinedFields.Contains(f)))
+                    var valuesByField = validTickets.Select(t => t.Values[i]).ToList();
+                    var rules = unfoundRules.Where(r => valuesByField.All(v => r.IsValid(v))).ToList();
+                    if (rules.Count == 1)
                     {
+                        rules[0].Order = i;
+                        unfoundRules.Remove(rules[0]);
                         continue;
                     }
-                    else if (validFields.Count == 1)
-                    {
-                        determinedFields.Add(validFields[0]);
-                        if (validFields[0].StartsWith(field))
-                            ticket *= _myTicket[i];
-                    }
-                    else
-                    {
-                        var leftOverFields = validFields.Where(f => !determinedFields.Contains(f)).ToList();
-                        if (leftOverFields.Count == 1)
-                        {
-                            determinedFields.Add(leftOverFields[0]);
-                            if (leftOverFields[0].StartsWith(field))
-                                ticket *= _myTicket[i];
-                        }
-                    }
                 }
-                if (determinedFields.Count == validTickets[0].Count)
-                    determining = false;
-            } while (determining);
+                if (unfoundRules.Count == 0)
+                    searching = false;
+            }
+
+            var fieldRules = _validationRules.Rules.Where(r => r.Field.StartsWith(field)).ToList();
+            var ticket = 1;
+
+            foreach (var rule in fieldRules)
+            {
+                ticket *= _myTicket.Values[rule.Order];
+            }
 
             return ticket;
         }
 
         private void ExtractRulesAndTickets(List<string> input)
         {
-            var counter = 0;
-            var parsingRules = true;
+            var state = ReadState.Rules;
+            Regex ruleRx = new Regex(@"^(?<field>(\w+\s)?\w+): (?<first>\d+)-(?<second>\d+) or (?<third>\d+)-(?<fourth>\d+)");
 
-            Regex regex = new Regex(@"^(?<field>(\w+\s)?\w+): (?<first>\d+)-(?<second>\d+) or (?<third>\d+)-(?<fourth>\d+)");
-            do
+            for (int i = 0; i < input.Count; i++)
             {
-                Match match = regex.Match(input[counter]);
-                if (match.Success)
-                {
-                    var groups = match.Groups;
-                    _validationRules.AddToRules(groups["field"].Value, int.Parse(groups["first"].Value),
-                        int.Parse(groups["second"].Value), int.Parse(groups["third"].Value), int.Parse(groups["fourth"].Value));
-                    counter++;
-                }
-                else
-                {
-                    parsingRules = false;
-                }
-            } while (parsingRules);
-
-            for (int i = counter; i < input.Count; i++)
-            {
+                if (string.IsNullOrWhiteSpace(input[i]))
+                    continue;
                 if (input[i].Equals("your ticket:"))
                 {
-                    _myTicket = input[i + 1].Split(',').Select(i => int.Parse(i)).ToList();
-                    counter = i + 2;
-                    break;
+                    state = ReadState.OwnTicket;
+                    continue;
                 }
-            }
-
-            for (int i = counter; i < input.Count; i++)
-            {
-                if (!input[i].Equals("nearby tickets:") && !input[i].Equals(""))
+                if (input[i].Equals("nearby tickets:"))
                 {
-                    var ticket = input[i].Split(',').Select(i => int.Parse(i)).ToList();
+                    state = ReadState.NearbyTickets;
+                    continue;
+                }
+                if (state == ReadState.Rules)
+                {
+                    Match match = ruleRx.Match(input[i]);
+                    var groups = match.Groups;
+                    var rule = new ValidationRule(groups["field"].Value, groups["first"].Value,
+                        groups["second"].Value, groups["third"].Value, groups["fourth"].Value);
+                    _validationRules.Rules.Add(rule);
+                    continue;
+                }
+                if (state == ReadState.OwnTicket)
+                {
+                    _myTicket = new Ticket(input[i]);
+                    continue;
+                }
+                if (state == ReadState.NearbyTickets)
+                {
+                    var ticket = new Ticket(input[i]);
                     _nearbyTickets.Add(ticket);
+                    continue;
                 }
             }
         }
+
+        public enum ReadState { Rules, OwnTicket, NearbyTickets }
     }
 }
