@@ -7,8 +7,8 @@ namespace AdventOfCode2020.train
     public class TicketValidator : ILogic
     {
         private Ticket _myTicket;
-        private List<Ticket> _nearbyTickets = new List<Ticket>();
-        private ValidationRules _validationRules = new ValidationRules();
+        private readonly List<Ticket> _nearbyTickets = new List<Ticket>();
+        private readonly ValidationRules _validationRules = new ValidationRules();
 
         public object GetAnswer(List<string> input, int part)
         {
@@ -26,14 +26,10 @@ namespace AdventOfCode2020.train
             return _nearbyTickets.SelectMany(t => t.Values).Where(v => !_validationRules.Rules.Any(r => r.IsValid(v))).ToList();
         }
 
-        private int GetValidatedTicket(string field)
+        private long GetValidatedTicket(string field)
         {
-            // wrong answers
-            // 337527599
-            // 305068317272992
-            var validTickets = _nearbyTickets.Where(t => _validationRules.IsValid(t)).ToList();
-            validTickets.Add(_myTicket);
-            var unfoundRules = _validationRules.Rules.Where(r => r.Order == -1).ToList();
+            var validTickets = _nearbyTickets.Where(t => t.IsValid(_validationRules)).ToList();
+            var unfoundRules = _validationRules.Rules.Where(r => r.Position == -1).ToList();
             var searching = true;
 
             while (searching)
@@ -41,10 +37,10 @@ namespace AdventOfCode2020.train
                 for (int i = 0; i < _myTicket.Values.Count; i++)
                 {
                     var valuesByField = validTickets.Select(t => t.Values[i]).ToList();
-                    var rules = unfoundRules.Where(r => valuesByField.All(v => r.IsValid(v))).ToList();
+                    var rules = unfoundRules.Where(r => r.IsMatch(valuesByField)).ToList();
                     if (rules.Count == 1)
                     {
-                        rules[0].Order = i;
+                        rules[0].Position = i;
                         unfoundRules.Remove(rules[0]);
                         continue;
                     }
@@ -53,13 +49,11 @@ namespace AdventOfCode2020.train
                     searching = false;
             }
 
-            var fieldRules = _validationRules.Rules.Where(r => r.Field.StartsWith(field)).ToList();
-            var ticket = 1;
+            var positions = _validationRules.Rules.Where(r => r.Field.StartsWith(field)).Select(r => r.Position).ToList();
+            long ticket = 1L;
 
-            foreach (var rule in fieldRules)
-            {
-                ticket *= _myTicket.Values[rule.Order];
-            }
+            foreach (var position in positions)
+                ticket *= _myTicket.Values[position];
 
             return ticket;
         }

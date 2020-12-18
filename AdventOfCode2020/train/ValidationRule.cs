@@ -6,7 +6,7 @@ namespace AdventOfCode2020.train
     public class ValidationRule
     {
         public string Field { get; private set; }
-        public int Order { get; set; } = -1;
+        public int Position { get; set; } = -1;
         private readonly int _min1;
         private readonly int _max1;
         private readonly int _min2;
@@ -25,16 +25,16 @@ namespace AdventOfCode2020.train
         {
             return (value >= _min1 && value <= _max1) || (value >= _min2 && value <= _max2);
         }
+
+        public bool IsMatch(List<int> values)
+        {
+            return values.All(v => IsValid(v));
+        }
     }
 
     public class ValidationRules
     {
         public List<ValidationRule> Rules { get; } = new List<ValidationRule>();
-
-        public bool IsValid(Ticket ticket)
-        {
-            return ticket.Values.All(f => Rules.Any(r => r.IsValid(f)));
-        }
     }
 
     public class Ticket
@@ -44,6 +44,17 @@ namespace AdventOfCode2020.train
         public Ticket(string values)
         {
             Values = values.Split(',').Select(i => int.Parse(i)).ToList();
+        }
+
+        public bool IsValid(ValidationRules rules)
+        {
+            var valid = true;
+            Values.ForEach(v =>
+            {
+                if (!rules.Rules.Any(r => r.IsValid(v)))
+                    valid = false;
+            });
+            return valid;
         }
     }
 }
