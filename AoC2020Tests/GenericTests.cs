@@ -15,6 +15,12 @@ namespace AoC2020Tests
             _input = new TestInput();
         }
 
+        [TestCase(18, 2, 42, ExpectedResult = 23340, TestName = "MathHomework_2f")]
+        [TestCase(18, 2, 41, ExpectedResult = 669060, TestName = "MathHomework_2e")]
+        [TestCase(18, 2, 40, ExpectedResult = 1445, TestName = "MathHomework_2d")]
+        [TestCase(18, 2, 39, ExpectedResult = 46, TestName = "MathHomework_2c")]
+        [TestCase(18, 2, 38, ExpectedResult = 51, TestName = "MathHomework_2b")]
+        [TestCase(18, 2, 37, ExpectedResult = 231, TestName = "MathHomework_2a")]
         [TestCase(18, 1, 42, ExpectedResult = 13632, TestName = "MathHomework_1f")]
         [TestCase(18, 1, 41, ExpectedResult = 12240, TestName = "MathHomework_1e")]
         [TestCase(18, 1, 40, ExpectedResult = 437, TestName = "MathHomework_1d")]
