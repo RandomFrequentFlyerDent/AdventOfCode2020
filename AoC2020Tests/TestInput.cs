@@ -17,6 +17,12 @@ namespace AoC2020Tests
 
         private readonly Dictionary<int, List<string>> _input = new Dictionary<int, List<string>>
         {
+            { 42, new List<string> { "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2" } },
+            { 41, new List<string> { "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))" } },
+            { 40, new List<string> { "5 + (8 * 3 + 9 + 3 * 4 * 3)" } },
+            { 39, new List<string> { "2 * 3 + (4 * 5)" } },
+            { 38, new List<string> { "1 + (2 * 3) + (4 * (5 + 6))" } },
+            { 37, new List<string> { "1 + 2 * 3 + 4 * 5 + 6" } },
             { 36, new List<string> {
                 "class: 0-1 or 4-19",
                 "row: 0-5 or 8-19",
