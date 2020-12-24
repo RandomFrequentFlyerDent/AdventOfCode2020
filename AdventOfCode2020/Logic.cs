@@ -6,6 +6,7 @@ using AdventOfCode2020.entertainment;
 using AdventOfCode2020.expenses;
 using AdventOfCode2020.game;
 using AdventOfCode2020.homework;
+using AdventOfCode2020.lobby;
 using AdventOfCode2020.luggage;
 using AdventOfCode2020.navigation;
 using AdventOfCode2020.passport;
@@ -28,6 +29,7 @@ namespace AdventOfCode2020
     {
         private readonly Dictionary<int, ILogic> _logic = new Dictionary<int, ILogic>
         {
+            { 24, new TileFlipper() },
             { 18, new MathHomework() },
             { 16, new TicketValidator() },
             { 15, new MemoryGame() },
